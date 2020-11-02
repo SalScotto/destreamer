@@ -45,12 +45,17 @@ async function init(): Promise<void> {
 
 
 async function DoInteractiveLogin(url: string, username?: string): Promise<Session> {
+    
+    //Gestione delle credenziali in env così da eliminare 
+    //l'interazione con il browser e renderlo headless
+    //(Lanci il container e passa la paura)
+    var passwd = process.env.STREAMPASSWD || null;
 
     logger.info('Launching headless Chrome to perform the OpenID Connect dance...');
 
     const browser: puppeteer.Browser = await puppeteer.launch({
         executablePath: getPuppeteerChromiumPath(),
-        headless: false,
+        headless: (passwd != null) ? true : false, //Esegui come headless se la password è settata
         userDataDir: (argv.keepLoginCookies) ? chromeCacheFolder : undefined,
         args: [
             '--disable-dev-shm-usage',
@@ -80,6 +85,29 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
         It could finish the login on its own if the user said 'yes' when asked to
         remember the credentials or it could still prompt the user for a password */
     }
+
+
+    //Procedura di Login automatizzata per studenti Federico II
+    try{
+        await browser.waitForTarget((target: puppeteer.Target) => target.url().includes('condividi.unina.it'), { timeout: 150000 });
+        if(username){
+            await page.waitForSelector('input[type="text"]', {timeout: 3000});
+            //Trimleft necessario (a quanto pare microsoft tollera gli spazi, unina no)
+            await page.type('input[type="text"]', username.trimLeft(), {delay:25});
+            if(passwd){
+                await page.waitForSelector('input[type="password"]', {timeout: 3000});
+                await page.type('input[type="password"]', passwd, {delay:25});
+                await page.waitForSelector('input[type="submit"]', {timeout: 3000});
+                await page.click('input[type="submit"]');
+                await browser.waitForTarget((target: puppeteer.Target) => target.url().includes('login.srf'), { timeout: 150000 });
+                await page.waitForSelector('input[type="submit"]', {timeout: 3000});
+                await page.click('input[type="submit"]');
+            }
+        }
+    }catch(e){
+        logger.error(e.toString());
+    }
+    //Fine login
 
     await browser.waitForTarget((target: puppeteer.Target) => target.url().endsWith('microsoftstream.com/'), { timeout: 150000 });
     logger.info('We are logged in.');
