@@ -2,6 +2,34 @@
   <img src="https://github.com/snobu/destreamer/workflows/Node%20CI/badge.svg" alt="CI build status" />
 </a>
 
+# README Dockerfile
+
+There's how to use the container:
+
+Pull the latest image from dockerhub
+```
+docker pull d1l3mm4/destreamer_unina
+```
+Or else, build it from the local dockerfile
+
+Then, create a directory in which you will download the videos and run the container with:
+```
+docker run -it --rm -e STREAMPASSWD=[your Unina/MSTeams Password] \
+	-v [path of the download directory]:/destreamer/videos \
+	d1l3mm4/destreamer_unina \
+	-u [your Unina/MSTeams  email] \
+	[other destreamer options (eg. -i for video URLs)]
+```
+The -it option is used to spawn an interactive pseudo-tty (used by destreamer to show the preview of the video and the progress bar);
+--rm is used to destroy the container at the end (so that you won't have multiple containers stopped waiting to be deleted afterwards).
+
+
+Since the browser is gonna work in headless mode, you have to set the user password as a parameter (ic. as an Environment Variable) so that puppetteer can log-in without needing user interaction.
+
+***
+
+# Original README
+
 # BREAKING
 
 **destreamer v3.0** is just around the corner. Download speed improvement is astonishing and we have a never before seen photo from the design sessions:<br><br>
