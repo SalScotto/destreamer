@@ -1,7 +1,7 @@
 FROM node:lts
 
 #Node è viziato
-RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+#RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 RUN apt-get update
 RUN apt-get install -y git ffmpeg wget gnupg
