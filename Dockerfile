@@ -16,9 +16,9 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/SalScotto/destreamer
-RUN chown docker ./destreamer/
+RUN chown node ./destreamer/
 
-USER docker
+USER node
 WORKDIR /destreamer
 
 RUN npm install
