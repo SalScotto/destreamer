@@ -1,13 +1,10 @@
 FROM node:lts
 
-#Node è viziato
-#RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
-
 RUN apt-get update
-RUN apt-get install -y git ffmpeg wget gnupg
+RUN apt-get install -y git ffmpeg wget gnupg --no-install-recommends
 
 #Aggiunte dipendenze per chrome/puppetteer
-#Forse si può togliere qualcosa, ma non ho voglia
+#Forse si può togliere qualcosa, ma non so cosa
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
@@ -16,8 +13,9 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/SalScotto/destreamer
-RUN chown node ./destreamer/
 
+#Node è viziato
+RUN chown node ./destreamer/
 USER node
 WORKDIR /destreamer
 
