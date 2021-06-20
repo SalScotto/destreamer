@@ -91,17 +91,17 @@ async function DoInteractiveLogin(url: string, username?: string): Promise<Sessi
     try{
         await browser.waitForTarget((target: puppeteer.Target) => target.url().includes('condividi.unina.it'), { timeout: 150000 });
         if(username){
-            await page.waitForSelector('input[type="text"]', {timeout: 3000});
+            await page.waitForSelector('#userNameInput', {timeout: 3000});
             //Trimleft necessario (a quanto pare microsoft tollera gli spazi, unina no)
-            await page.type('input[type="text"]', username.trimLeft(), {delay:25});
+            //await page.type('#userNameInput', username.trimLeft(), {delay:25});
             if(passwd){
-                await page.waitForSelector('input[type="password"]', {timeout: 3000});
-                await page.type('input[type="password"]', passwd, {delay:25});
-                await page.waitForSelector('input[type="submit"]', {timeout: 3000});
-                await page.click('input[type="submit"]');
+                await page.waitForSelector('#passwordInput', {timeout: 3000});
+                await page.type('#passwordInput', passwd, {delay:25});
+                await page.waitForSelector('#submitButton', {timeout: 3000});
+                await page.click('#submitButton');
                 await browser.waitForTarget((target: puppeteer.Target) => target.url().includes('login.srf'), { timeout: 150000 });
-                await page.waitForSelector('input[type="submit"]', {timeout: 3000});
-                await page.click('input[type="submit"]');
+                await page.waitForSelector('#idSIButton9', {timeout: 3000});
+                await page.click('#idSIButton9');
             }
         }
     }catch(e){

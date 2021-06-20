@@ -14,7 +14,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 
 RUN git clone https://github.com/SalScotto/destreamer
 
-#Node è viziato
+#Destreamer non può essere lanciato come root
 RUN chown node ./destreamer/
 USER node
 WORKDIR /destreamer
